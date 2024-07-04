@@ -258,6 +258,7 @@ namespace NuGet.Protocol
             CancellationToken token)
         {
             int maxRetries = _enhancedHttpRetryHelper.IsEnabled ? _enhancedHttpRetryHelper.RetryCount : 3;
+            logger.LogVerbose($"Start downloading package {identity} from {url}, max retries: {maxRetries}");
 
             for (var retry = 1; retry <= maxRetries; ++retry)
             {
@@ -265,7 +266,7 @@ namespace NuGet.Protocol
 
                 try
                 {
-                    logger.LogVerbose($"Downloading package {identity} from {url}");
+                    logger.LogVerbose($"Downloading package {identity} from {url}, retry {retry}");
                     var result = await _httpSource.GetAsync(
                         new HttpSourceCachedRequest(
                             url,
@@ -330,6 +331,7 @@ namespace NuGet.Protocol
                 }
             }
 
+            logger.LogVerbose($"Returning null for package {identity} from {url}");
             return await processAsync(null);
         }
 
